@@ -236,9 +236,6 @@ docker compose exec db psql -U postgres -d space_explorer
   4. **Demo**: Screenshots or GIFs showing it in action
 
 ## Use Your Own Stack (Optional)
-If you prefer, you are **not required** to fork or use this repository. You may build your own stack—language, framework, and tooling of your choice—so long as your solution:
-
-1. Implements the *Browse Images*, *Search*, and *Search History* features described above, and
-2. Consumes the public **NASA Images API** (see official docs: <https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf>).
+If you prefer, you are **not required** to fork or use this repository. You may build your own stack—language, framework, and tooling of your choice—so long as you meet the [requirements](#requirements) above.
 
 Feel free to organize your codebase however you like and push it to a new repository.
