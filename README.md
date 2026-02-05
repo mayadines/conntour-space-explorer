@@ -13,7 +13,7 @@ Build a small web application that allows users to explore and search a set of i
    - The browsing experience should be clear, visually friendly, and support viewing image metadata.
 
 2. **Search Using Natural Language**  
-   - Users should be able to type free-text queries (e.g., _“images of Mars rovers”_, _“solar flares”_).  
+   - Users should be able to type free-text queries (e.g., _"images of Mars rovers"_, _"solar flares"_).  
    - The app should return a list of images that match the query, with a **confidence score** shown per result.
 
 3. **Search History**  
@@ -22,6 +22,11 @@ Build a small web application that allows users to explore and search a set of i
    - Users should be able to **delete individual searches** from their history.
    - Since history can grow large over time, the UI should **support pagination** or an alternative way to handle large result sets efficiently.
 
+4. **Special Feature**  
+   - Implement **one creative feature** that showcases your full-stack skills.
+   - This should be something beyond the basic requirements that demonstrates your ability to think creatively and execute technically.
+   - Document the feature in your submission (see [Deliverables](#deliverables)).
+
 ---
 
 ## Notes & Suggestions
@@ -29,88 +34,209 @@ Build a small web application that allows users to explore and search a set of i
 - **Implementing real machine learning or NLP is _not_ required.**  
   You can simulate search relevance and confidence scores using a basic scoring method, such as keyword overlap or a hash function.
 
-- There is **no need to use a persistent database**.  
-  You can store data in-memory, or write to a **JSON file** if you prefer persisting data between runs.
-
 - Focus on building an intuitive and well-structured user experience.
 
 - Bonus points for adding filtering, pagination, or authentication — but those are not required.
 
 ---
 
+## Tech Stack
 
+- **Backend**: FastAPI + SQLAlchemy (async) + PostgreSQL
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Infrastructure**: Docker Compose, Nginx, uv (Python package manager)
 
 ## Project Structure
+
 ```
 space-explorer/
-├── backend/           # FastAPI backend
-│   ├── app.py        # Main FastAPI application
-│   └── data/         # Mock data
-├── frontend/         # React frontend
-│   ├── src/         # Source files
-│   └── public/      # Static files
-└── README.md        # This file
+├── backend/                  # FastAPI backend
+│   ├── app.py                # App setup, middleware, router registration
+│   ├── models.py             # Pydantic domain models
+│   ├── pyproject.toml        # Python dependencies (uv)
+│   ├── Dockerfile            # Backend Docker image
+│   ├── controllers/          # HTTP routing layer
+│   │   └── source.py         # Source routes (APIRouter)
+│   ├── db/                   # Database layer
+│   │   ├── models.py         # SQLAlchemy ORM models
+│   │   └── session.py        # Database session management
+│   ├── repositories/         # Data access layer
+│   │   ├── base.py           # Generic Repository interface
+│   │   └── source.py         # PostgreSQL implementation
+│   ├── scripts/              # Utility scripts
+│   │   └── seed_db.py        # Database seeding from mock data
+│   └── data/                 # Mock data
+│       └── mock_data.json    # NASA images seed data
+├── frontend/                 # React frontend
+│   ├── src/                  # Source files
+│   ├── public/               # Static files
+│   ├── Dockerfile            # Production Docker image
+│   ├── Dockerfile.dev        # Development Docker image
+│   └── nginx.conf            # Nginx configuration
+├── docker-compose.yml        # Production compose file
+├── docker-compose.dev.yml    # Development compose file
+└── README.md                 # This file
 ```
 
 ## Prerequisites
-- Python 3.8+
-- Node.js 14+
-- npm or yarn
-- uv (Python package installer)
 
-## Setup Instructions
+- Docker and Docker Compose
+- (Optional for local development):
+  - Python 3.11+
+  - Node.js 20+
+  - PostgreSQL 16+
+  - uv (Python package installer)
 
-### Backend Setup
-1. Install uv if you haven't already:
+---
+
+## Quick Start with Docker Compose
+
+### Production Mode
+
+Build and run the entire application with a single command:
+
+```bash
+docker compose up --build
+```
+
+This will:
+- Start PostgreSQL database (seeded with NASA images from `mock_data.json`)
+- Build and start the FastAPI backend on http://localhost:5001
+- Build and start the React frontend (served via Nginx) on http://localhost:3001
+
+The frontend will proxy API requests to the backend automatically.
+
+### Development Mode (with Hot Reload)
+
+For development with hot-reloading enabled for both frontend and backend:
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+This enables:
+- PostgreSQL database with persistent volume
+- Backend: Auto-reload on Python file changes
+- Frontend: React development server with hot module replacement
+
+### Useful Docker Commands
+
+```bash
+# Start services in background
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# View logs for a specific service
+docker compose logs -f backend
+
+# Stop services
+docker compose down
+
+# Rebuild and restart a specific service
+docker compose up --build backend
+
+# Clean up everything (including volumes and database data)
+docker compose down -v --rmi all
+
+# Connect to PostgreSQL database
+docker compose exec db psql -U postgres -d space_explorer
+```
+
+---
+
+## Local Development Setup (Without Docker)
+
+### Prerequisites
+
+1. Install uv:
+
+   **Mac/Linux:**
    ```bash
    curl -LsSf https://astral.sh/uv/install.sh | sh
    ```
-2. Navigate to the backend directory:
+
+   **Windows (PowerShell):**
+   ```powershell
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+
+2. Install and start PostgreSQL, then create the database:
+   ```bash
+   createdb space_explorer
+   ```
+
+### Backend Setup
+
+1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
-3. Create and activate virtual environment using uv:
-   ```bash
-   uv venv
-   source .venv/bin/activate  # On Unix/MacOS
-   # OR
-   .venv\Scripts\activate     # On Windows
-   ```
-4. Install dependencies using uv:
-   ```bash
-   uv pip install -r requirements.txt
-   ```
-5. Run the FastAPI server with Uvicorn:
-   ```bash
-   uvicorn app:app --reload --port 5000
-   ```
-   The backend will run on http://localhost:5000
 
-   - The API docs are available at http://localhost:5000/docs
+2. Set the database URL (adjust if your PostgreSQL uses different credentials):
+
+   **Mac/Linux:**
+   ```bash
+   export DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5433/space_explorer"
+   ```
+
+   **Windows (PowerShell):**
+   ```powershell
+   $env:DATABASE_URL="postgresql+asyncpg://postgres:postgres@localhost:5433/space_explorer"
+   ```
+
+3. Install dependencies:
+   ```bash
+   uv sync
+   ```
+
+4. Seed the database:
+   ```bash
+   uv run python scripts/seed_db.py
+   ```
+
+5. Run the server:
+   ```bash
+   uv run uvicorn app:app --reload --port 5001
+   ```
+
+   The backend will run on http://localhost:5001
+   - API docs available at http://localhost:5001/docs
 
 ### Frontend Setup
+
 1. Navigate to the frontend directory:
    ```bash
    cd frontend
    ```
+
 2. Install dependencies:
    ```bash
    npm install
    ```
+
 3. Start the development server:
    ```bash
    npm start
    ```
-   The frontend will run on http://localhost:3000
+
+   The frontend will run on http://localhost:3001
+
+---
+
 
 ## Deliverables
 
-- A GitHub repository with your implementation. (Fork this one if you'd like)
+- A GitHub repository with your implementation (fork this one if you'd like)
+- Document your **Cool Feature** in the README:
+  1. **Feature name**: What did you build?
+  2. **Why this feature**: What problem does it solve for users?
+  3. **Implementation details**: Key technical decisions and challenges
+  4. **Demo**: Screenshots or GIFs showing it in action
 
 ## Use Your Own Stack (Optional)
-If you prefer, you are **not required** to fork or use this repository. You may build your own stack—language, framework, and tooling of your choice—so long as your solution:
 
-1. Implements the *Browse Images*, *Search*, and *Search History* features described above, and
-2. Consumes the public **NASA Images API** (see official docs: <https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf>).
+If you prefer, you are **not required** to fork or use this repository. You may build your own stack—language, framework, and tooling of your choice—so long as your solution meets the requirements above.
 
 Feel free to organize your codebase however you like and push it to a new repository.
