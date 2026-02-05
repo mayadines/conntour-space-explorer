@@ -1,11 +1,26 @@
-from typing import List
+from contextlib import asynccontextmanager
 
-from data.db import SpaceDB
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import Source
 
-app = FastAPI()
+from controllers import source_router
+from db import Base, engine
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan handler - creates tables on startup."""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
+
+app = FastAPI(
+    title="Space Explorer API",
+    description="API for browsing NASA images",
+    version="0.1.0",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,10 +30,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-db = SpaceDB()
-
-
-@app.get("/api/sources", response_model=List[Source])
-def get_sources():
-    sources = db.get_all_sources()
-    return sources
+app.include_router(source_router)
