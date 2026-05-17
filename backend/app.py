@@ -1,15 +1,16 @@
+import importlib
+import pkgutil
 from contextlib import asynccontextmanager
 
+import controllers
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from controllers import source_router
 from db import Base, engine
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan handler - creates tables on startup."""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
@@ -30,4 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(source_router)
+for module_info in pkgutil.iter_modules(controllers.__path__):
+    module = importlib.import_module(f"controllers.{module_info.name}")
+    if hasattr(module, "router"):
+        app.include_router(module.router)

@@ -4,8 +4,8 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import SourceModel
-from models import SearchResult, Source
 from repositories.base import Repository
+from schemas.source import SearchResult, Source
 
 
 class SourceRepository(Repository[Source]):

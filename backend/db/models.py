@@ -5,8 +5,6 @@ Base = declarative_base()
 
 
 class SourceModel(Base):
-    """SQLAlchemy model for sources table."""
-
     __tablename__ = "sources"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -16,3 +14,11 @@ class SourceModel(Base):
     description = Column(Text, nullable=True)
     image_url = Column(Text, nullable=True)
     status = Column(String(50), nullable=False, default="Active")
+
+
+class UserModel(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_name = Column(String(255), nullable=False, unique=True)
+    user_password = Column(String(255), nullable=False)

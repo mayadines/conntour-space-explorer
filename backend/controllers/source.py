@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_db
-from models import SearchResponse, Source
-from repositories import SourceRepository
+from repositories.source import SourceRepository
+from schemas.source import SearchResponse, Source
 
 router = APIRouter(prefix="/api/sources", tags=["sources"])
 
