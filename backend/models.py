@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -15,3 +15,16 @@ class Source(BaseModel):
     description: str = ""
     image_url: Optional[str] = None
     status: str
+
+
+class SearchResult(BaseModel):
+    source: Source
+    score: int
+
+
+class SearchResponse(BaseModel):
+    items: List[SearchResult]
+    total: int
+    page: int
+    page_size: int
+    pages: int

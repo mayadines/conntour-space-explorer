@@ -31,7 +31,7 @@ async def seed_database():
         "mock_data.json"
     )
     
-    with open(data_path, "r") as f:
+    with open(data_path, "r", encoding="utf-8") as f:
         json_data = json.load(f)
     
     # Parse and transform the data

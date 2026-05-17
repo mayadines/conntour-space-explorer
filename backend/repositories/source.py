@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Tuple
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import SourceModel
-from models import Source
+from models import SearchResult, Source
 from repositories.base import Repository
 
 
@@ -23,3 +23,29 @@ class SourceRepository(Repository[Source]):
         """Retrieve all sources from the database."""
         result = await self._session.execute(select(SourceModel))
         return [Source.model_validate(row) for row in result.scalars().all()]
+
+    async def search(self, query: str, page: int, page_size: int) -> Tuple[List[SearchResult], int]:
+        ts_query = func.plainto_tsquery("english", query)
+        ts_vector = func.to_tsvector(
+            "english",
+            SourceModel.name + " " + func.coalesce(SourceModel.description, ""),
+        )
+        rank = func.ts_rank(ts_vector, ts_query).label("score")
+        match_filter = ts_vector.op("@@")(ts_query)
+
+        count_stmt = select(func.count()).select_from(SourceModel).where(match_filter)
+        total = (await self._session.execute(count_stmt)).scalar_one()
+
+        stmt = (
+            select(SourceModel, rank)
+            .where(match_filter)
+            .order_by(rank.desc())
+            .offset((page - 1) * page_size)
+            .limit(page_size)
+        )
+        rows = (await self._session.execute(stmt)).all()
+        items = [
+            SearchResult(source=Source.model_validate(row), score=round(score * 1000))
+            for row, score in rows
+        ]
+        return items, total
