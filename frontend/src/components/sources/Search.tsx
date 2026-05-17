@@ -1,8 +1,8 @@
 import { Dispatch, FC, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { SearchResponse, SearchResult } from '../types';
+import { SearchResponse, SearchResult } from '../../types';
 import SourceCard from './SourceCard';
-import Spinner from './Spinner';
+import Spinner from '../ui/Spinner';
 
 interface Props {
   query: string;
@@ -70,9 +70,9 @@ const Search: FC<Props> = ({ query, setQuery, setSearchActive }) => {
           placeholder="Search images..."
           value={query}
           onChange={(e) => {
-              setQuery(e.target.value);
-              if (!e.target.value.trim()) setSearchActive(false);
-            }}
+            setQuery(e.target.value);
+            if (!e.target.value.trim()) setSearchActive(false);
+          }}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />

@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
-import Search from './components/Search';
-import Sources from './components/Sources';
+import Search from './components/sources/Search';
+import Sources from './components/sources/Sources';
 
 const App: FC = () => {
   const [query, setQuery] = useState('');

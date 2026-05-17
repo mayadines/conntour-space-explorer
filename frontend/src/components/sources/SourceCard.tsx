@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { createPortal } from 'react-dom';
-import { Source } from '../types';
-import useModal from '../hooks/useModal';
-import TruncatedText from './TruncatedText';
+import { Source } from '../../types';
+import useModal from '../../hooks/useModal';
+import TruncatedText from '../ui/TruncatedText';
 
 interface Props {
   source: Source;

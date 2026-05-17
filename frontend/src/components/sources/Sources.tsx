@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Source } from '../types';
+import { Source } from '../../types';
 import SourceCard from './SourceCard';
-import Spinner from './Spinner';
+import Spinner from '../ui/Spinner';
 
 const Sources: FC = () => {
   const [images, setImages] = useState<Source[]>([]);
