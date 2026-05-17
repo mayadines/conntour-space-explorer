@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Source } from '../types';
 import useModal from '../hooks/useModal';
+import Tooltip from './Tooltip';
 
 interface Props {
   source: Source;
@@ -12,8 +13,8 @@ const SourceCard: FC<Props> = ({ source, score }) => {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-md overflow-hidden">
-        <div className="relative">
+      <div className="bg-white rounded-2xl shadow-md">
+        <div className="relative overflow-hidden rounded-t-2xl">
           {source.image_url && (
             <img
               src={source.image_url}
@@ -33,17 +34,21 @@ const SourceCard: FC<Props> = ({ source, score }) => {
 
         <div className="p-4">
           <div className="flex items-start justify-between gap-2 mb-1">
-            <h2 className="font-bold text-gray-900 text-lg leading-snug">{source.name}</h2>
+            <Tooltip text={source.name} maxWidth="max-w-xs">
+              <h2 className="font-bold text-gray-900 text-lg leading-snug truncate">{source.name}</h2>
+            </Tooltip>
             <span className="text-green-500 text-xs font-medium shrink-0 mt-1">✓ {source.status}</span>
           </div>
 
           <p className="text-gray-400 text-sm mb-3">
-            📅 {source.launch_date && new Date(source.launch_date).toLocaleDateString()}
+            📅 <span className="text-gray-500 font-medium">Launch Date:</span> {source.launch_date && new Date(source.launch_date).toLocaleDateString()}
           </p>
 
           <hr className="mb-3" />
 
-          <p className="text-gray-600 text-sm line-clamp-2 mb-4">{source.description}</p>
+          <Tooltip text={source.description} maxWidth="max-w-sm">
+            <p className="text-gray-600 text-sm line-clamp-2 mb-4">{source.description}</p>
+          </Tooltip>
 
           {source.image_url && (
             <div className="flex justify-end">
