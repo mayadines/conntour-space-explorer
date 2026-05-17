@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Source } from '../types';
 import useModal from '../hooks/useModal';
-import Tooltip from './Tooltip';
+import TruncatedText from './TruncatedText';
 
 interface Props {
   source: Source;
@@ -34,9 +34,7 @@ const SourceCard: FC<Props> = ({ source, score }) => {
 
         <div className="p-4">
           <div className="flex items-start justify-between gap-2 mb-1">
-            <Tooltip text={source.name} maxWidth="max-w-xs">
-              <h2 className="font-bold text-gray-900 text-lg leading-snug truncate">{source.name}</h2>
-            </Tooltip>
+            <TruncatedText text={source.name} variant="title" />
             <span className="text-green-500 text-xs font-medium shrink-0 mt-1">✓ {source.status}</span>
           </div>
 
@@ -46,9 +44,9 @@ const SourceCard: FC<Props> = ({ source, score }) => {
 
           <hr className="mb-3" />
 
-          <Tooltip text={source.description} maxWidth="max-w-sm">
-            <p className="text-gray-600 text-sm line-clamp-2 mb-4">{source.description}</p>
-          </Tooltip>
+          <div className="mb-4">
+            <TruncatedText text={source.description} variant="description" />
+          </div>
 
           {source.image_url && (
             <div className="flex justify-end">
@@ -73,7 +71,7 @@ const SourceCard: FC<Props> = ({ source, score }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-800">{source.name}</h2>
+              <TruncatedText text={source.name} variant="title" />
               <button
                 onClick={close}
                 className="text-gray-400 hover:text-gray-600 text-xl leading-none"

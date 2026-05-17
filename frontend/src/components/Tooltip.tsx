@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useRef, useState } from 'react';
 
 interface Props {
   text: string;
@@ -6,14 +6,39 @@ interface Props {
   maxWidth?: string;
 }
 
-const Tooltip: FC<Props> = ({ text, children, maxWidth = 'max-w-xs' }) => (
-  <div className="relative group min-w-0">
-    {children}
-    <div className={`absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-lg ${maxWidth} opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 shadow-lg`}>
-      {text}
-      <div className="absolute top-full left-4 border-4 border-transparent border-t-gray-800" />
+const Tooltip: FC<Props> = ({ text, children, maxWidth = 'max-w-xs' }) => {
+  const [visible, setVisible] = useState(false);
+  const [above, setAbove] = useState(true);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (wrapperRef.current) {
+      const rect = wrapperRef.current.getBoundingClientRect();
+      setAbove(rect.top > window.innerHeight - rect.bottom);
+    }
+    setVisible(true);
+  };
+
+  return (
+    <div
+      className="relative min-w-0"
+      ref={wrapperRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setVisible(false)}
+    >
+      {children}
+      {visible && (
+        <div
+          className={`absolute ${above ? 'bottom-full mb-2' : 'top-full mt-2'} left-0 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-lg ${maxWidth} z-20 shadow-lg`}
+        >
+          {text}
+          <div
+            className={`absolute left-4 border-4 border-transparent ${above ? 'top-full border-t-gray-800' : 'bottom-full border-b-gray-800'}`}
+          />
+        </div>
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 export default Tooltip;
