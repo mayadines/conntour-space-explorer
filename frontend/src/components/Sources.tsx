@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Source } from '../types';
 import SourceCard from './SourceCard';
+import Spinner from './Spinner';
 
 const Sources: FC = () => {
   const [images, setImages] = useState<Source[]>([]);
@@ -13,9 +14,9 @@ const Sources: FC = () => {
       try {
         const response = await axios.get<Source[]>('/api/sources');
         setImages(response.data);
-        setLoading(false);
-      } catch (err) {
+      } catch {
         setError('Failed to fetch space images');
+      } finally {
         setLoading(false);
       }
     };
@@ -26,7 +27,7 @@ const Sources: FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <Spinner />
       </div>
     );
   }

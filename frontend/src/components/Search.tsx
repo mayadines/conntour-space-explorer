@@ -1,12 +1,13 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { SearchResponse, SearchResult } from '../types';
 import SourceCard from './SourceCard';
+import Spinner from './Spinner';
 
 interface Props {
   query: string;
-  setQuery: (q: string) => void;
-  setSearchActive: (active: boolean) => void;
+  setQuery: Dispatch<SetStateAction<string>>;
+  setSearchActive: Dispatch<SetStateAction<boolean>>;
 }
 
 const Search: FC<Props> = ({ query, setQuery, setSearchActive }) => {
@@ -32,7 +33,7 @@ const Search: FC<Props> = ({ query, setQuery, setSearchActive }) => {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     const trimmed = query.trim();
     if (!trimmed) {
       setSearchResults(null);
@@ -59,7 +60,7 @@ const Search: FC<Props> = ({ query, setQuery, setSearchActive }) => {
     } finally {
       setSearching(false);
     }
-  };
+  }, [query, setSearchActive]);
 
   return (
     <div className="container mx-auto px-4 pt-8">
@@ -68,7 +69,10 @@ const Search: FC<Props> = ({ query, setQuery, setSearchActive }) => {
           type="text"
           placeholder="Search images..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+              setQuery(e.target.value);
+              if (!e.target.value.trim()) setSearchActive(false);
+            }}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -81,7 +85,7 @@ const Search: FC<Props> = ({ query, setQuery, setSearchActive }) => {
       </div>
       {searching ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <Spinner />
         </div>
       ) : searchError ? (
         <p className="text-red-500 text-center py-12">{searchError}</p>

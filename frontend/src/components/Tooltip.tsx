@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef, useState } from 'react';
+import { FC, ReactNode, useId, useRef, useState } from 'react';
 
 interface Props {
   text: string;
@@ -10,6 +10,7 @@ const Tooltip: FC<Props> = ({ text, children, maxWidth = 'max-w-xs' }) => {
   const [visible, setVisible] = useState(false);
   const [above, setAbove] = useState(true);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const tooltipId = useId();
 
   const handleMouseEnter = () => {
     if (wrapperRef.current) {
@@ -25,10 +26,13 @@ const Tooltip: FC<Props> = ({ text, children, maxWidth = 'max-w-xs' }) => {
       ref={wrapperRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setVisible(false)}
+      aria-describedby={visible ? tooltipId : undefined}
     >
       {children}
       {visible && (
         <div
+          id={tooltipId}
+          role="tooltip"
           className={`absolute ${above ? 'bottom-full mb-2' : 'top-full mt-2'} left-0 px-3 py-1.5 bg-gray-800 text-white text-xs rounded-lg ${maxWidth} z-20 shadow-lg`}
         >
           {text}
