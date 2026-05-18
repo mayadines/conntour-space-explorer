@@ -1,7 +1,7 @@
 import { FC, FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../../api/auth';
-import FormField from '../ui/FormField';
+import { register } from '../api/auth';
+import FormField from '../components/ui/FormField';
 
 const Register: FC = () => {
   const navigate = useNavigate();

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { FC, useEffect, useState } from 'react';
+import { fetchSources } from '../../api/sources';
 import { Source } from '../../types';
 import Spinner from '../ui/Spinner';
 import SourceCard from './SourceCard';
@@ -12,8 +13,8 @@ const Sources: FC = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    axios.get<Source[]>('/api/sources', { signal: controller.signal })
-      .then(res => setImages(res.data))
+    fetchSources(controller.signal)
+      .then(data => setImages(data))
       .catch(err => {
         if (!axios.isCancel(err)) setError('Failed to fetch space images');
       })

@@ -1,7 +1,7 @@
 import { FC, FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../../api/auth';
-import FormField from '../ui/FormField';
+import { login } from '../api/auth';
+import FormField from '../components/ui/FormField';
 
 const SignIn: FC = () => {
   const navigate = useNavigate();
