@@ -2,12 +2,12 @@ import axios from 'axios';
 import { FC, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { searchSources } from '../api/sources';
-import Navbar from '../components/ui/Navbar';
-import Search from '../components/sources/Search';
-import LoadingState from '../components/ui/LoadingState';
-import ErrorState from '../components/ui/ErrorState';
-import EmptyState from '../components/sources/EmptyState';
-import ResultsList from '../components/sources/ResultsList';
+import Navbar from '../components/ui/layout/Navbar';
+import Search from '../components/search/Search';
+import LoadingState from '../components/ui/feedback/LoadingState';
+import ErrorState from '../components/ui/feedback/ErrorState';
+import EmptyState from '../components/ui/feedback/EmptyState';
+import ResultsList from '../components/search/ResultsList';
 import { SearchResult } from '../types';
 
 const PAGE_SIZE = 6;

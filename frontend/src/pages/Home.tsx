@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import Navbar from '../components/ui/Navbar';
-import Search from '../components/sources/Search';
+import Navbar from '../components/ui/layout/Navbar';
+import Search from '../components/search/Search';
 import Sources from '../components/sources/Sources';
 
 const Home: FC = () => (

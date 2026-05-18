@@ -2,8 +2,8 @@ import axios from 'axios';
 import { FC, useEffect, useState } from 'react';
 import { fetchSources } from '../../api/sources';
 import { Source } from '../../types';
-import Pagination from '../ui/Pagination';
-import Spinner from '../ui/Spinner';
+import Pagination from '../ui/layout/Pagination';
+import Spinner from '../ui/feedback/Spinner';
 import SourceCard from './SourceCard';
 
 const PAGE_SIZE = 6;
