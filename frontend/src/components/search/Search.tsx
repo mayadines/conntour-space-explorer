@@ -1,66 +1,31 @@
 import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addHistory, clearHistory, deleteHistoryItem, getHistory } from '../../api/searchHistory';
-import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, SearchIcon, TrashIcon } from '../ui/icons/index';
-import { SearchHistory } from '../../api/searchHistory';
-import Button from '../ui/Button';
+import { addHistory } from '../../api/searchHistory';
+import { SearchIcon } from '../ui/icons/index';
+import SearchDropdown from './SearchDropdown';
 
 import { SearchProps } from './types';
 
 const Search: FC<SearchProps> = ({ initialQuery = '' }) => {
   const navigate = useNavigate();
   const [query, setQuery] = useState(initialQuery);
-  const [history, setHistory] = useState<SearchHistory[]>([]);
-  const [historyLoaded, setHistoryLoaded] = useState(false);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [focused, setFocused] = useState(false);
-
-  const fetchPage = (p: number) => {
-    setHistoryLoaded(false);
-    getHistory(p)
-      .then(res => {
-        setHistory(res.items);
-        setTotalPages(Math.ceil(res.total / res.page_size) || 1);
-        setPage(p);
-      })
-      .catch(() => setHistory([]))
-      .finally(() => setHistoryLoaded(true));
-  };
 
   useEffect(() => {
     setQuery(initialQuery);
   }, [initialQuery]);
 
-  useEffect(() => {
-    if (!query.trim()) fetchPage(1);
-  }, [query]);
-
   const handleSearch = (q = query) => {
     const trimmed = q.trim();
     if (trimmed) addHistory(trimmed).catch(() => {});
-    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+    navigate(`/?q=${encodeURIComponent(trimmed)}`);
   };
 
-  const handleDelete = (e: React.MouseEvent, id: number) => {
-    e.stopPropagation();
-    deleteHistoryItem(id).then(() => fetchPage(page));
-  };
-
-  const handleClear = () => {
-    clearHistory().then(() => {
-      setHistory([]);
-      setPage(1);
-      setTotalPages(1);
-    });
-  };
-
-  const showDropdown = !query.trim() && historyLoaded && focused;
+  const showDropdown = !query.trim() && focused;
 
   return (
-    <div className="py-4">
+    <div className="py-4 relative">
       <div className="relative">
-        <div className="relative">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
@@ -75,50 +40,8 @@ const Search: FC<SearchProps> = ({ initialQuery = '' }) => {
         </div>
 
         {showDropdown && (
-          <div onMouseDown={e => e.preventDefault()} className="absolute top-full left-0 right-0 mt-1 bg-white border rounded-xl shadow-lg z-10 overflow-hidden">
-            <p className="px-4 pt-3 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Recent Searches
-            </p>
-
-            {history.length === 0 ? (
-              <p className="px-4 py-3 text-sm text-gray-400">No history found</p>
-            ) : (
-              <ul className="divide-y">
-                {history.map(item => (
-                  <li
-                    key={item.id}
-                    onClick={() => handleSearch(item.search_query)}
-                    className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-50"
-                  >
-                    <ClockIcon />
-                    <span className="flex-1 text-sm text-gray-700">{item.search_query}</span>
-                    <Button variant="icon" onClick={e => handleDelete(e, item.id)}>
-                      ×
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <div className="flex items-center justify-between px-4 py-2 border-t">
-              <Button onClick={handleClear}>
-                <TrashIcon />
-                Clear History
-              </Button>
-
-              <div className="flex items-center gap-2">
-                <Button variant="icon" onClick={() => fetchPage(page - 1)} disabled={page <= 1}>
-                  <ChevronLeftIcon />
-                </Button>
-                <span className="text-xs text-gray-400">{page} / {totalPages}</span>
-                <Button variant="icon" onClick={() => fetchPage(page + 1)} disabled={page >= totalPages}>
-                  <ChevronRightIcon />
-                </Button>
-              </div>
-            </div>
-          </div>
+          <SearchDropdown onSearch={handleSearch} />
         )}
-      </div>
     </div>
   );
 };

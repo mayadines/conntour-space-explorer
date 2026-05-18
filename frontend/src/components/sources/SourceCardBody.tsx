@@ -4,11 +4,11 @@ import SourceCardHeader from './SourceCardHeader';
 import SourceLaunchDate from './SourceLaunchDate';
 import Button from '../ui/Button';
 import SourceImageModal from './SourceImageModal';
-import useModal from '../../hooks/useModal';
+import useModal, { Modal } from '../../hooks/useModal';
 import { SourceCardBodyProps } from './types';
 
 const SourceCardBody: FC<SourceCardBodyProps> = ({ source }) => {
-  const { open, close, Modal } = useModal();
+  const { isOpen, open, close } = useModal();
 
   return (
     <div className="p-4">
@@ -21,7 +21,7 @@ const SourceCardBody: FC<SourceCardBodyProps> = ({ source }) => {
           <Button onClick={open}>View Full Image</Button>
         </div>
       )}
-      <Modal>
+      <Modal isOpen={isOpen} onClose={close}>
         <SourceImageModal source={source} onClose={close} />
       </Modal>
     </div>

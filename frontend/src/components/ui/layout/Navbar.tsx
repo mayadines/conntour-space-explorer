@@ -8,7 +8,7 @@ const Navbar: FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/signin');
+    navigate('/auth');
   };
 
   return (

@@ -4,8 +4,8 @@ export interface Source {
   id: number;
   name: string;
   description: string;
-  launch_date: string;
-  image_url: string;
+  launch_date: string | null;
+  image_url: string | null;
   type: string;
   status: string;
 }
@@ -22,11 +22,6 @@ export interface SearchResponse {
   page_size: number;
   pages: number;
 }
-
-export const fetchSources = async (signal?: AbortSignal): Promise<Source[]> => {
-  const { data } = await axios.get<Source[]>('/api/sources', { signal });
-  return data;
-};
 
 export const searchSources = async (
   query: string,

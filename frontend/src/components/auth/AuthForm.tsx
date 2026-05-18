@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from 'react';
+import { FC, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, register } from '../../api/auth';
 import FormField from '../ui/forms/FormField';
@@ -12,18 +12,26 @@ const AuthForm: FC<{ mode: AuthMode }> = ({ mode }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setError('');
+  }, [mode]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
       if (mode === 'register') {
-        await register(userName, password);
+          await register(userName, password);
       }
       await login(userName, password);
       navigate('/');
     } catch {
-      setError(mode === 'signin' ? 'Invalid username or password.' : 'Registration failed.');
+      setError(
+        mode === 'register'
+          ? 'Problem occurred during registration.'
+          : 'Invalid username or password.'
+      );
     } finally {
       setLoading(false);
     }
@@ -35,7 +43,9 @@ const AuthForm: FC<{ mode: AuthMode }> = ({ mode }) => {
       <FormField id="password" label="Password" type="password" value={password} onChange={setPassword} />
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <Button type="submit" disabled={loading}>
-        {loading ? (mode === 'signin' ? 'Signing in...' : 'Creating account...') : (mode === 'signin' ? 'Sign In' : 'Register')}
+        {loading
+          ? mode === 'signin' ? 'Signing in...' : 'Creating account...'
+          : mode === 'signin' ? 'Sign In' : 'Register'}
       </Button>
     </form>
   );

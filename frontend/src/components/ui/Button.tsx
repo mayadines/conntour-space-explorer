@@ -6,8 +6,8 @@ const styles = {
   icon: 'p-2 text-gray-500 rounded-md hover:text-blue-600 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors',
 };
 
-const Button: FC<ButtonProps> = ({ children, variant = 'default', ...rest }) => (
-  <button {...rest} className={styles[variant]}>
+const Button: FC<ButtonProps> = ({ children, variant = 'default', type = 'button', ...rest }) => (
+  <button type={type} {...rest} className={styles[variant]}>
     {children}
   </button>
 );
