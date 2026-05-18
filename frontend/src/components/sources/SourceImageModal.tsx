@@ -15,7 +15,7 @@ const SourceImageModal: FC<SourceImageModalProps> = ({ source, onClose }) => (
     >
       <div className="flex items-center justify-between mb-4">
         <TruncatedText text={source.name} variant="title" />
-        <Button onClick={onClose} aria-label="Close" className="text-gray-400 hover:text-gray-600">
+        <Button variant="icon" onClick={onClose} aria-label="Close">
           <CloseIcon />
         </Button>
       </div>

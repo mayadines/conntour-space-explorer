@@ -34,7 +34,7 @@ const AuthForm: FC<{ mode: AuthMode }> = ({ mode }) => {
       <FormField id="username" label="Username" type="text" value={userName} onChange={setUserName} />
       <FormField id="password" label="Password" type="password" value={password} onChange={setPassword} />
       {error && <p className="text-red-500 text-sm">{error}</p>}
-      <Button type="submit" disabled={loading} className="w-full">
+      <Button type="submit" disabled={loading}>
         {loading ? (mode === 'signin' ? 'Signing in...' : 'Creating account...') : (mode === 'signin' ? 'Sign In' : 'Register')}
       </Button>
     </form>

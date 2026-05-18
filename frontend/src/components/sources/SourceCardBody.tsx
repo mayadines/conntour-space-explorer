@@ -2,7 +2,7 @@ import { FC } from 'react';
 import TruncatedText from '../ui/TruncatedText';
 import SourceCardHeader from './SourceCardHeader';
 import SourceLaunchDate from './SourceLaunchDate';
-import OutlineButton from '../ui/OutlineButton';
+import Button from '../ui/Button';
 import SourceImageModal from './SourceImageModal';
 import useModal from '../../hooks/useModal';
 import { SourceCardBodyProps } from './types';
@@ -18,7 +18,7 @@ const SourceCardBody: FC<SourceCardBodyProps> = ({ source }) => {
       <TruncatedText text={source.description} variant="description" />
       {source.image_url && (
         <div className="flex justify-end mt-4">
-          <OutlineButton onClick={open}>View Full Image</OutlineButton>
+          <Button onClick={open}>View Full Image</Button>
         </div>
       )}
       <Modal>

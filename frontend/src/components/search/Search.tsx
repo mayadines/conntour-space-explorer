@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { addHistory, clearHistory, deleteHistoryItem, getHistory } from '../../api/searchHistory';
 import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, SearchIcon, TrashIcon } from '../ui/icons/index';
 import { SearchHistory } from '../../api/searchHistory';
+import Button from '../ui/Button';
 
 import { SearchProps } from './types';
 
@@ -91,42 +92,28 @@ const Search: FC<SearchProps> = ({ initialQuery = '' }) => {
                   >
                     <ClockIcon />
                     <span className="flex-1 text-sm text-gray-700">{item.search_query}</span>
-                    <button
-                      onClick={e => handleDelete(e, item.id)}
-                      className="text-gray-300 hover:text-gray-500 text-lg leading-none"
-                    >
+                    <Button variant="icon" onClick={e => handleDelete(e, item.id)}>
                       ×
-                    </button>
+                    </Button>
                   </li>
                 ))}
               </ul>
             )}
 
             <div className="flex items-center justify-between px-4 py-2 border-t">
-              <button
-                onClick={handleClear}
-                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600"
-              >
+              <Button onClick={handleClear}>
                 <TrashIcon />
                 Clear History
-              </button>
+              </Button>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => fetchPage(page - 1)}
-                  disabled={page <= 1}
-                  className="p-1 text-gray-400 hover:text-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
+                <Button variant="icon" onClick={() => fetchPage(page - 1)} disabled={page <= 1}>
                   <ChevronLeftIcon />
-                </button>
+                </Button>
                 <span className="text-xs text-gray-400">{page} / {totalPages}</span>
-                <button
-                  onClick={() => fetchPage(page + 1)}
-                  disabled={page >= totalPages}
-                  className="p-1 text-gray-400 hover:text-blue-500 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
+                <Button variant="icon" onClick={() => fetchPage(page + 1)} disabled={page >= totalPages}>
                   <ChevronRightIcon />
-                </button>
+                </Button>
               </div>
             </div>
           </div>

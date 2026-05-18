@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
 export interface TooltipProps {
   text: string;
@@ -11,10 +11,7 @@ export interface TruncatedTextProps {
   variant: 'title' | 'description';
 }
 
-export interface ButtonProps {
-  type?: 'submit' | 'button';
-  disabled?: boolean;
-  onClick?: () => void;
-  className?: string;
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
   children: ReactNode;
+  variant?: 'default' | 'icon';
 }
