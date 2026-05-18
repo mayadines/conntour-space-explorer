@@ -2,7 +2,7 @@ import importlib
 import pkgutil
 from contextlib import asynccontextmanager
 
-import controllers
+import modules
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,13 +25,13 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
-for module_info in pkgutil.iter_modules(controllers.__path__):
-    module = importlib.import_module(f"controllers.{module_info.name}")
+for module_info in pkgutil.iter_modules(modules.__path__):
+    module = importlib.import_module(f"modules.{module_info.name}.router")
     if hasattr(module, "router"):
         app.include_router(module.router)

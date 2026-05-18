@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import UserModel
-from schemas.auth import LoginRequest
-from schemas.user import User
+from modules.auth.schemas import LoginRequest
+from modules.users.schemas import User
 
 
 class AuthRepository:

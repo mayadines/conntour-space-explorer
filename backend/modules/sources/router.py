@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_db
-from repositories.source import SourceRepository
-from schemas.source import SearchResponse, Source
+from modules.sources.repository import SourceRepository
+from modules.sources.schemas import SearchResponse, Source
 
 router = APIRouter(prefix="/api/sources", tags=["sources"])
 
@@ -16,9 +16,7 @@ def get_repository(session: AsyncSession = Depends(get_db)) -> SourceRepository:
 
 
 @router.get("", response_model=List[Source])
-async def get_sources(
-    repository: SourceRepository = Depends(get_repository),
-) -> List[Source]:
+async def get_sources(repository: SourceRepository = Depends(get_repository)) -> List[Source]:
     return await repository.get_all()
 
 

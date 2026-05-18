@@ -4,23 +4,14 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db.models import SourceModel
-from repositories.base import Repository
-from schemas.source import SearchResult, Source
+from modules.sources.schemas import SearchResult, Source
 
 
-class SourceRepository(Repository[Source]):
-    """
-    PostgreSQL repository implementation for Source entities.
-
-    Implements the generic Repository interface with PostgreSQL
-    as the backing data store using SQLAlchemy async.
-    """
-
+class SourceRepository:
     def __init__(self, session: AsyncSession):
         self._session = session
 
     async def get_all(self) -> List[Source]:
-        """Retrieve all sources from the database."""
         result = await self._session.execute(select(SourceModel))
         return [Source.model_validate(row) for row in result.scalars().all()]
 

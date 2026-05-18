@@ -1,4 +1,4 @@
-from schemas.user import UserBase
+from modules.users.schemas import UserBase
 
 
 class LoginRequest(UserBase):
