@@ -1,29 +1,44 @@
-import { FC, FormEvent } from 'react';
+import { FC, FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login, register } from '../../api/auth';
 import FormField from '../ui/forms/FormField';
 import Button from '../ui/Button';
+import { AuthMode } from '../../types';
 
-type Mode = 'signin' | 'register';
+const AuthForm: FC<{ mode: AuthMode }> = ({ mode }) => {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-type Props = {
-  mode: Mode;
-  userName: string;
-  password: string;
-  error: string;
-  loading: boolean;
-  onUserNameChange: (v: string) => void;
-  onPasswordChange: (v: string) => void;
-  onSubmit: (e: FormEvent) => void;
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      if (mode === 'register') {
+        await register(userName, password);
+      }
+      await login(userName, password);
+      navigate('/');
+    } catch {
+      setError(mode === 'signin' ? 'Invalid username or password.' : 'Registration failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <FormField id="username" label="Username" type="text" value={userName} onChange={setUserName} />
+      <FormField id="password" label="Password" type="password" value={password} onChange={setPassword} />
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+      <Button type="submit" disabled={loading} className="w-full">
+        {loading ? (mode === 'signin' ? 'Signing in...' : 'Creating account...') : (mode === 'signin' ? 'Sign In' : 'Register')}
+      </Button>
+    </form>
+  );
 };
-
-const AuthForm: FC<Props> = ({ mode, userName, password, error, loading, onUserNameChange, onPasswordChange, onSubmit }) => (
-  <form onSubmit={onSubmit} className="space-y-4">
-    <FormField id="username" label="Username" type="text" value={userName} onChange={onUserNameChange} />
-    <FormField id="password" label="Password" type="password" value={password} onChange={onPasswordChange} />
-    {error && <p className="text-red-500 text-sm">{error}</p>}
-    <Button type="submit" disabled={loading} className="w-full">
-      {loading ? (mode === 'signin' ? 'Signing in...' : 'Creating account...') : (mode === 'signin' ? 'Sign In' : 'Register')}
-    </Button>
-  </form>
-);
 
 export default AuthForm;
