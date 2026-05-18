@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import Pagination from '../ui/layout/Pagination';
 import SourceCard from '../sources/SourceCard';
-import { SearchResult } from '../../types';
+import { SearchResult } from '../../api/sources';
 
 interface ResultsListProps {
   results: SearchResult[];

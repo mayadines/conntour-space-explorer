@@ -1,5 +1,18 @@
 import axios from 'axios';
-import { SearchHistory, SearchHistoryPage } from '../types';
+
+export interface SearchHistory {
+  id: number;
+  user_id: number;
+  search_query: string;
+}
+
+export interface SearchHistoryPage {
+  items: SearchHistory[];
+  total: number;
+  page: number;
+  page_size: number;
+  has_more: boolean;
+}
 
 export const getHistory = async (page = 1, pageSize = 3): Promise<SearchHistoryPage> => {
   const { data } = await axios.get<SearchHistoryPage>('/api/search-history', {

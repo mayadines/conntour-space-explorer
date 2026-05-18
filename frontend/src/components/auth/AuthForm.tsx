@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { login, register } from '../../api/auth';
 import FormField from '../ui/forms/FormField';
 import Button from '../ui/Button';
-import { AuthMode } from '../../types';
+import { AuthMode } from './types';
 
 const AuthForm: FC<{ mode: AuthMode }> = ({ mode }) => {
   const navigate = useNavigate();

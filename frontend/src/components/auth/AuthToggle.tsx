@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { AuthMode } from '../../types';
+import { AuthMode } from './types';
 
 const AuthToggle: FC<{ mode: AuthMode; onSwitch: () => void }> = ({ mode, onSwitch }) => (
   <p className="mt-4 text-sm text-gray-600 text-center">

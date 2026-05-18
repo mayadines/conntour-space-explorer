@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addHistory, clearHistory, deleteHistoryItem, getHistory } from '../../api/searchHistory';
 import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, SearchIcon, TrashIcon } from '../ui/icons/index';
-import { SearchHistory } from '../../types';
+import { SearchHistory } from '../../api/searchHistory';
 
 interface Props {
   initialQuery?: string;

@@ -3,7 +3,7 @@ import AuthCard from '../components/auth/AuthCard';
 import AuthForm from '../components/auth/AuthForm';
 import AuthToggle from '../components/auth/AuthToggle';
 import useToggle from '../hooks/useToggle';
-import { AuthMode } from '../types';
+import { AuthMode } from '../components/auth/types';
 
 const AuthPage: FC = () => {
   const [mode, switchMode] = useToggle<AuthMode>('signin', 'register');

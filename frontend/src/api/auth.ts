@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { User } from '../types';
+
+export interface User {
+  id: number;
+  user_name: string;
+}
 
 export const login = async (userName: string, password: string): Promise<string> => {
   const { data } = await axios.post<{ access_token: string }>('/api/auth/login', {
