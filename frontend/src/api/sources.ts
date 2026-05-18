@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { SearchResponse, SearchResult, Source } from '../types';
+import { SearchResponse, Source } from '../types';
 
 export const fetchSources = async (signal?: AbortSignal): Promise<Source[]> => {
   const { data } = await axios.get<Source[]>('/api/sources', { signal });
@@ -9,12 +9,12 @@ export const fetchSources = async (signal?: AbortSignal): Promise<Source[]> => {
 export const searchSources = async (
   query: string,
   page = 1,
-  pageSize = 20,
+  pageSize = 6,
   signal?: AbortSignal
-): Promise<SearchResult[]> => {
+): Promise<SearchResponse> => {
   const { data } = await axios.get<SearchResponse>('/api/sources/search', {
     params: { q: query, page, page_size: pageSize },
     signal,
   });
-  return data.items;
+  return data;
 };
