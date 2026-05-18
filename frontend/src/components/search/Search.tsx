@@ -30,6 +30,10 @@ const Search: FC<Props> = ({ initialQuery = '' }) => {
   };
 
   useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
+
+  useEffect(() => {
     if (!query.trim()) fetchPage(1);
   }, [query]);
 

@@ -27,7 +27,7 @@ const SourceCard: FC<Props> = ({ source, score }) => {
           <span className="absolute top-3 left-3 bg-white/90 text-gray-700 text-xs font-medium px-3 py-1 rounded-full capitalize">
             {source.type}
           </span>
-          {score !== undefined && (
+          {score && (
             <span className="absolute top-3 right-3 bg-white/90 text-gray-800 text-xs font-semibold px-3 py-1 rounded-full">
               ★ {score}
             </span>
