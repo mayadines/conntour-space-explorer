@@ -15,6 +15,7 @@ const Search: FC<Props> = ({ initialQuery = '' }) => {
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [focused, setFocused] = useState(false);
 
   const fetchPage = (p: number) => {
     setHistoryLoaded(false);
@@ -52,7 +53,7 @@ const Search: FC<Props> = ({ initialQuery = '' }) => {
     });
   };
 
-  const showDropdown = !query.trim() && historyLoaded;
+  const showDropdown = !query.trim() && historyLoaded && focused;
 
   return (
     <div className="container mx-auto px-4 pt-8 pb-4">
@@ -65,6 +66,8 @@ const Search: FC<Props> = ({ initialQuery = '' }) => {
               placeholder="Search images..."
               value={query}
               onChange={e => setQuery(e.target.value)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
               onKeyDown={e => e.key === 'Enter' && handleSearch()}
               className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -78,7 +81,7 @@ const Search: FC<Props> = ({ initialQuery = '' }) => {
         </div>
 
         {showDropdown && (
-          <div className="absolute top-full left-0 right-14 mt-1 bg-white border rounded-xl shadow-lg z-10 overflow-hidden">
+          <div onMouseDown={e => e.preventDefault()} className="absolute top-full left-0 right-14 mt-1 bg-white border rounded-xl shadow-lg z-10 overflow-hidden">
             <p className="px-4 pt-3 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Recent Searches
             </p>
