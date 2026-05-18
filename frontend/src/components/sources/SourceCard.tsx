@@ -1,15 +1,10 @@
 import { FC } from 'react';
 import { createPortal } from 'react-dom';
-import { Source } from '../../api/sources';
 import useModal from '../../hooks/useModal';
 import TruncatedText from '../ui/TruncatedText';
+import { SourceCardProps } from './types';
 
-interface Props {
-  source: Source;
-  score?: number;
-}
-
-const SourceCard: FC<Props> = ({ source, score }) => {
+const SourceCard: FC<SourceCardProps> = ({ source, score }) => {
   const { isOpen, open, close } = useModal();
 
   return (

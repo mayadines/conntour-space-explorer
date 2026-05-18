@@ -4,11 +4,9 @@ import { addHistory, clearHistory, deleteHistoryItem, getHistory } from '../../a
 import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, SearchIcon, TrashIcon } from '../ui/icons/index';
 import { SearchHistory } from '../../api/searchHistory';
 
-interface Props {
-  initialQuery?: string;
-}
+import { SearchProps } from './types';
 
-const Search: FC<Props> = ({ initialQuery = '' }) => {
+const Search: FC<SearchProps> = ({ initialQuery = '' }) => {
   const navigate = useNavigate();
   const [query, setQuery] = useState(initialQuery);
   const [history, setHistory] = useState<SearchHistory[]>([]);

@@ -1,11 +1,5 @@
 import { FC } from 'react';
-
-interface PaginationProps {
-  page: number;
-  totalPages: number;
-  onPrev: () => void;
-  onNext: () => void;
-}
+import { PaginationProps } from './types';
 
 const Pagination: FC<PaginationProps> = ({ page, totalPages, onPrev, onNext }) => {
   if (totalPages <= 1) return null;

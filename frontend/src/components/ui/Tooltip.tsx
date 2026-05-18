@@ -1,12 +1,7 @@
-import { FC, ReactNode, useId, useRef, useState } from 'react';
+import { FC, useId, useRef, useState } from 'react';
+import { TooltipProps } from './types';
 
-interface Props {
-  text: string;
-  children: ReactNode;
-  maxWidth?: string;
-}
-
-const Tooltip: FC<Props> = ({ text, children, maxWidth = 'max-w-xs' }) => {
+const Tooltip: FC<TooltipProps> = ({ text, children, maxWidth = 'max-w-xs' }) => {
   const [visible, setVisible] = useState(false);
   const [above, setAbove] = useState(true);
   const wrapperRef = useRef<HTMLDivElement>(null);

@@ -1,10 +1,6 @@
 import { FC } from 'react';
 import Tooltip from './Tooltip';
-
-interface Props {
-  text: string;
-  variant: 'title' | 'description';
-}
+import { TruncatedTextProps } from './types';
 
 const styles = {
   title: {
@@ -17,7 +13,7 @@ const styles = {
   },
 };
 
-const TruncatedText: FC<Props> = ({ text, variant }) => {
+const TruncatedText: FC<TruncatedTextProps> = ({ text, variant }) => {
   const { className, tooltipWidth } = styles[variant];
   const Tag: 'h2' | 'p' = variant === 'title' ? 'h2' : 'p';
 

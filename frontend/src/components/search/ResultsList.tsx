@@ -1,15 +1,7 @@
 import { FC } from 'react';
 import Pagination from '../ui/layout/Pagination';
 import SourceCard from '../sources/SourceCard';
-import { SearchResult } from '../../api/sources';
-
-interface ResultsListProps {
-  results: SearchResult[];
-  page: number;
-  totalPages: number;
-  onPrev: () => void;
-  onNext: () => void;
-}
+import { ResultsListProps } from './types';
 
 const ResultsList: FC<ResultsListProps> = ({ results, page, totalPages, onPrev, onNext }) => (
   <>

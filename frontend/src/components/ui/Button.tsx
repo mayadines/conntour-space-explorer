@@ -1,14 +1,7 @@
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
+import { ButtonProps } from './types';
 
-type Props = {
-  type?: 'submit' | 'button';
-  disabled?: boolean;
-  onClick?: () => void;
-  className?: string;
-  children: ReactNode;
-};
-
-const Button: FC<Props> = ({ type = 'button', disabled, onClick, className = '', children }) => (
+const Button: FC<ButtonProps> = ({ type = 'button', disabled, onClick, className = '', children }) => (
   <button
     type={type}
     disabled={disabled}

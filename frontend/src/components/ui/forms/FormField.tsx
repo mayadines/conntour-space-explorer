@@ -1,14 +1,7 @@
 import { FC } from 'react';
+import { FormFieldProps } from './types';
 
-interface Props {
-  id: string;
-  label: string;
-  type: 'text' | 'password';
-  value: string;
-  onChange: (value: string) => void;
-}
-
-const FormField: FC<Props> = ({ id, label, type, value, onChange }) => (
+const FormField: FC<FormFieldProps> = ({ id, label, type, value, onChange }) => (
   <div>
     <label htmlFor={id} className="block text-sm font-medium text-gray-700 mb-1">
       {label}
