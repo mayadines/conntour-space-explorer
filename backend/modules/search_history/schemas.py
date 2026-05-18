@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -11,3 +13,11 @@ class SearchHistory(BaseModel):
     id: int
     user_id: int
     search_query: str
+
+
+class SearchHistoryPage(BaseModel):
+    items: List[SearchHistory]
+    total: int
+    page: int
+    page_size: int
+    has_more: bool

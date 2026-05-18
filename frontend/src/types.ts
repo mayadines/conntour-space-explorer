@@ -18,6 +18,20 @@ export interface SearchResult {
   score: number;
 }
 
+export interface SearchHistory {
+  id: number;
+  user_id: number;
+  search_query: string;
+}
+
+export interface SearchHistoryPage {
+  items: SearchHistory[];
+  total: number;
+  page: number;
+  page_size: number;
+  has_more: boolean;
+}
+
 export interface SearchResponse {
   items: SearchResult[];
   total: number;
