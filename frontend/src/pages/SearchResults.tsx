@@ -1,19 +1,21 @@
 import axios from 'axios';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { searchSources } from '../api/sources';
 import Navbar from '../components/ui/Navbar';
-import Pagination from '../components/ui/Pagination';
 import Search from '../components/sources/Search';
-import SourceCard from '../components/sources/SourceCard';
-import Spinner from '../components/ui/Spinner';
+import LoadingState from '../components/ui/LoadingState';
+import ErrorState from '../components/ui/ErrorState';
+import EmptyState from '../components/sources/EmptyState';
+import ResultsList from '../components/sources/ResultsList';
 import { SearchResult } from '../types';
 
 const PAGE_SIZE = 6;
+const SEARCH_PARAM = 'q';
 
 const SearchResults: FC = () => {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get('q') ?? '';
+  const query = searchParams.get(SEARCH_PARAM) ?? '';
 
   const [results, setResults] = useState<SearchResult[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -21,9 +23,12 @@ const SearchResults: FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const prevQueryRef = useRef(query);
+
+  if (prevQueryRef.current !== query) {
+    prevQueryRef.current = query;
     setPage(1);
-  }, [query]);
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -43,32 +48,27 @@ const SearchResults: FC = () => {
     return () => controller.abort();
   }, [query, page]);
 
+  const renderContent = () => {
+    if (loading) return <LoadingState />;
+    if (error) return <ErrorState message={error} />;
+    if (results.length === 0) return <EmptyState query={query} />;
+    return (
+      <ResultsList
+        results={results}
+        page={page}
+        totalPages={totalPages}
+        onPrev={() => setPage(p => p - 1)}
+        onNext={() => setPage(p => p + 1)}
+      />
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="container mx-auto px-4 pt-8">
         <Search initialQuery={query} />
-        {loading ? (
-          <div className="flex justify-center py-12"><Spinner /></div>
-        ) : error ? (
-          <p className="text-red-500 text-center py-12">{error}</p>
-        ) : results.length === 0 ? (
-          <p className="text-gray-500 text-center py-12">{query ? `No results found for "${query}"` : 'No results found'}</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-              {results.map(({ source, score }) => (
-                <SourceCard key={source.id} source={source} score={score} />
-              ))}
-            </div>
-            <Pagination
-              page={page}
-              totalPages={totalPages}
-              onPrev={() => setPage(p => p - 1)}
-              onNext={() => setPage(p => p + 1)}
-            />
-          </>
-        )}
+        {renderContent()}
       </div>
     </div>
   );
