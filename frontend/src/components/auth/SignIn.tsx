@@ -14,8 +14,7 @@ const SignIn: FC = () => {
     setError('');
     setLoading(true);
     try {
-      const user = await login(userName, password);
-      localStorage.setItem('user', JSON.stringify(user));
+      await login(userName, password);
       navigate('/');
     } catch {
       setError('Invalid username or password.');

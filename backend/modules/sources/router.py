@@ -5,10 +5,11 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_db
+from modules.auth.security import get_current_user
 from modules.sources.repository import SourceRepository
 from modules.sources.schemas import SearchResponse, Source
 
-router = APIRouter(prefix="/api/sources", tags=["sources"])
+router = APIRouter(prefix="/api/sources", tags=["sources"], dependencies=[Depends(get_current_user)])
 
 
 def get_repository(session: AsyncSession = Depends(get_db)) -> SourceRepository:

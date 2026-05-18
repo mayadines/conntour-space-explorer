@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_db
+from modules.auth.security import get_current_user
 from modules.users.repository import UserRepository
 from modules.users.schemas import User, UserCreate, UserUpdate
 
-router = APIRouter(prefix="/api/users", tags=["users"])
+router = APIRouter(prefix="/api/users", tags=["users"], dependencies=[Depends(get_current_user)])
 
 
 def get_repository(session: AsyncSession = Depends(get_db)) -> UserRepository:
