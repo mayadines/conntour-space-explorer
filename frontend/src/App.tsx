@@ -1,6 +1,5 @@
 import { FC, ReactElement } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
 import Register from './pages/Register';
 import SearchResults from './pages/SearchResults';
 import SignIn from './pages/SignIn';
@@ -16,7 +15,7 @@ const PublicOnlyRoute: FC<{ element: ReactElement }> = ({ element }) =>
 const App: FC = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<ProtectedRoute element={<Home />} />} />
+      <Route path="/" element={<ProtectedRoute element={<SearchResults />} />} />
       <Route path="/search" element={<ProtectedRoute element={<SearchResults />} />} />
       <Route path="/signin" element={<PublicOnlyRoute element={<SignIn />} />} />
       <Route path="/register" element={<PublicOnlyRoute element={<Register />} />} />
