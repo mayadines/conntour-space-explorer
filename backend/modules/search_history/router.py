@@ -21,7 +21,7 @@ async def get_history(
     repository: SearchHistoryRepository = Depends(get_repository),
 ) -> SearchHistoryPage:
     items, total = await repository.get_by_user_id(current_user["id"], page, page_size)
-    return SearchHistoryPage(items=items, total=total, page=page, page_size=page_size, has_more=page * page_size < total)
+    return SearchHistoryPage(items=items, total=total, page=page, page_size=page_size)
 
 
 @router.delete("", status_code=204)

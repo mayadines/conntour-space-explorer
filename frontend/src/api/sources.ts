@@ -4,7 +4,7 @@ export interface Source {
   id: number;
   name: string;
   description: string;
-  launch_date: string | null;
+  launch_date: string;
   image_url: string | null;
   type: string;
   status: string;

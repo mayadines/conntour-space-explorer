@@ -2,7 +2,6 @@ import axios from 'axios';
 
 export interface SearchHistory {
   id: number;
-  user_id: number;
   search_query: string;
 }
 
@@ -11,7 +10,6 @@ export interface SearchHistoryPage {
   total: number;
   page: number;
   page_size: number;
-  has_more: boolean;
 }
 
 export const getHistory = async (page = 1, pageSize = 3): Promise<SearchHistoryPage> => {

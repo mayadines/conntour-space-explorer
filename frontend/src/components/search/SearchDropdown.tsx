@@ -24,8 +24,11 @@ const SearchDropdown: FC<SearchDropdownProps> = ({ onSearch }) => {
   const handleDelete = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     deleteHistoryItem(id)
-      .then(() => fetchPage(page))
-      .catch(() => {});
+      .then(() => {
+        const targetPage = history.length === 1 && page > 1 ? page - 1 : page;
+        fetchPage(targetPage);
+      })
+      .catch(err => console.error('Failed to delete history item', err));
   };
 
   const handleClear = () => {
@@ -35,7 +38,7 @@ const SearchDropdown: FC<SearchDropdownProps> = ({ onSearch }) => {
         setPage(1);
         setTotalPages(1);
       })
-      .catch(() => {});
+      .catch(err => console.error('Failed to clear history', err));
   };
 
   return (
