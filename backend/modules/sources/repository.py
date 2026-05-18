@@ -16,6 +16,19 @@ class SourceRepository:
         return [Source.model_validate(row) for row in result.scalars().all()]
 
     async def search(self, query: str, page: int, page_size: int) -> Tuple[List[SearchResult], int]:
+        if not query.strip():
+            count_stmt = select(func.count()).select_from(SourceModel)
+            total = (await self._session.execute(count_stmt)).scalar_one()
+            stmt = (
+                select(SourceModel)
+                .order_by(SourceModel.id)
+                .offset((page - 1) * page_size)
+                .limit(page_size)
+            )
+            rows = (await self._session.execute(stmt)).scalars().all()
+            items = [SearchResult(source=Source.model_validate(row), score=0) for row in rows]
+            return items, total
+
         ts_query = func.plainto_tsquery("english", query)
         ts_vector = func.to_tsvector(
             "english",

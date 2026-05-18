@@ -23,7 +23,7 @@ async def get_sources(repository: SourceRepository = Depends(get_repository)) ->
 
 @router.get("/search", response_model=SearchResponse)
 async def search_sources(
-    q: str,
+    q: str = Query(default=""),
     page: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
     repository: SourceRepository = Depends(get_repository),

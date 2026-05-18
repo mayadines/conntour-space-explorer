@@ -35,8 +35,7 @@ const Search: FC<Props> = ({ initialQuery = '' }) => {
 
   const handleSearch = (q = query) => {
     const trimmed = q.trim();
-    if (!trimmed) return;
-    addHistory(trimmed).catch(() => {});
+    if (trimmed) addHistory(trimmed).catch(() => {});
     navigate(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
