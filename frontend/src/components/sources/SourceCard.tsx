@@ -20,6 +20,7 @@ const SourceCard: FC<Props> = ({ source, score }) => {
             <img
               src={source.image_url}
               alt={source.name}
+              loading="lazy"
               className="w-full h-52 object-cover"
             />
           )}

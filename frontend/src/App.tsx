@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, ReactElement, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { logout } from './api/auth';
 import Register from './components/auth/Register';
@@ -8,8 +8,11 @@ import Sources from './components/sources/Sources';
 
 const isAuthenticated = () => !!localStorage.getItem('access_token');
 
-const ProtectedRoute: FC<{ element: JSX.Element }> = ({ element }) =>
+const ProtectedRoute: FC<{ element: ReactElement }> = ({ element }) =>
   isAuthenticated() ? element : <Navigate to="/signin" replace />;
+
+const PublicOnlyRoute: FC<{ element: ReactElement }> = ({ element }) =>
+  isAuthenticated() ? <Navigate to="/" replace /> : element;
 
 const Navbar: FC = () => {
   const navigate = useNavigate();
@@ -49,8 +52,8 @@ const App: FC = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<ProtectedRoute element={<Home />} />} />
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/signin" element={<PublicOnlyRoute element={<SignIn />} />} />
+      <Route path="/register" element={<PublicOnlyRoute element={<Register />} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </BrowserRouter>

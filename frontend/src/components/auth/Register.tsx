@@ -1,6 +1,7 @@
 import { FC, FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../../api/auth';
+import FormField from '../ui/FormField';
 
 const Register: FC = () => {
   const navigate = useNavigate();
@@ -28,26 +29,8 @@ const Register: FC = () => {
       <div className="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Create Account</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <input
-              type="text"
-              value={userName}
-              onChange={e => setUserName(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <FormField id="username" label="Username" type="text" value={userName} onChange={setUserName} />
+          <FormField id="password" label="Password" type="password" value={password} onChange={setPassword} />
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button
             type="submit"
