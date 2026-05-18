@@ -24,6 +24,23 @@ async def get_history(
     return SearchHistoryPage(items=items, total=total, page=page, page_size=page_size, has_more=page * page_size < total)
 
 
+@router.delete("", status_code=204)
+async def clear_history(
+    current_user: dict = Depends(get_current_user),
+    repository: SearchHistoryRepository = Depends(get_repository),
+) -> None:
+    await repository.clear(current_user["id"])
+
+
+@router.delete("/{history_id}", status_code=204)
+async def delete_history_item(
+    history_id: int,
+    current_user: dict = Depends(get_current_user),
+    repository: SearchHistoryRepository = Depends(get_repository),
+) -> None:
+    await repository.delete(current_user["id"], history_id)
+
+
 @router.post("", response_model=SearchHistory, status_code=201)
 async def add_history(
     data: SearchHistoryCreate,

@@ -28,6 +28,25 @@ class SearchHistoryRepository:
         items = [SearchHistory.model_validate(row) for row in result.scalars().all()]
         return items, total
 
+    async def delete(self, user_id: int, history_id: int) -> None:
+        result = await self._session.execute(
+            select(SearchHistoryModel).where(
+                SearchHistoryModel.id == history_id,
+                SearchHistoryModel.user_id == user_id,
+            )
+        )
+        entry = result.scalar_one_or_none()
+        if entry:
+            await self._session.delete(entry)
+            await self._session.commit()
+
+    async def clear(self, user_id: int) -> None:
+        from sqlalchemy import delete as sql_delete
+        await self._session.execute(
+            sql_delete(SearchHistoryModel).where(SearchHistoryModel.user_id == user_id)
+        )
+        await self._session.commit()
+
     async def create(self, user_id: int, data: SearchHistoryCreate) -> SearchHistory:
         entry = SearchHistoryModel(user_id=user_id, search_query=data.search_query)
         self._session.add(entry)
