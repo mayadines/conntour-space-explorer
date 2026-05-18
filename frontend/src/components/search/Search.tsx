@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addHistory } from '../../api/searchHistory';
-import { SearchIcon } from '../ui/icons/index';
+import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 
 import { SearchProps } from './types';
@@ -25,19 +25,13 @@ const Search: FC<SearchProps> = ({ initialQuery = '' }) => {
 
   return (
     <div className="py-4 relative">
-      <div className="relative">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search images..."
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+      <SearchInput
+        value={query}
+        onChange={setQuery}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        onSubmit={handleSearch}
+      />
 
         {showDropdown && (
           <SearchDropdown onSearch={handleSearch} />

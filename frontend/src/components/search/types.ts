@@ -8,6 +8,14 @@ export interface SearchDropdownProps {
   onSearch: (query: string) => void;
 }
 
+export interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+  onSubmit: () => void;
+}
+
 export interface ResultsListProps {
   results: SearchResult[];
   page: number;
