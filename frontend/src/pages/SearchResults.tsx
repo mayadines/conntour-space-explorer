@@ -66,7 +66,7 @@ const SearchResults: FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="container mx-auto px-4 pt-8">
+      <div className="container mx-auto px-4">
         <Search initialQuery={query} />
         {renderContent()}
       </div>

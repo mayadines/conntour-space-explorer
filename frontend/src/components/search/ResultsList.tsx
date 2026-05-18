@@ -5,7 +5,7 @@ import { ResultsListProps } from './types';
 
 const ResultsList: FC<ResultsListProps> = ({ results, page, totalPages, onPrev, onNext }) => (
   <>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {results.map(({ source, score }) => (
         <SourceCard key={source.id} source={source} score={score} />
       ))}

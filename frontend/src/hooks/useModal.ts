@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const useModal = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +20,12 @@ const useModal = () => {
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
 
-  return { isOpen, open, close };
+  const Modal: FC<{ children: ReactNode }> = ({ children }) => {
+    if (!isOpen) return null;
+    return createPortal(children, document.body);
+  };
+
+  return { isOpen, open, close, Modal };
 };
 
 export default useModal;
