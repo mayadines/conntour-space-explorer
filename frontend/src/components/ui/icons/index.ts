@@ -1,0 +1,9 @@
+export { default as ChevronLeftIcon } from './ChevronLeftIcon';
+export { default as ChevronRightIcon } from './ChevronRightIcon';
+export { default as ClockIcon } from './ClockIcon';
+export { default as CloseIcon } from './CloseIcon';
+export { default as LogoutIcon } from './LogoutIcon';
+export { default as SearchIcon } from './SearchIcon';
+export { default as SpinnerIcon } from './SpinnerIcon';
+export { default as TrashIcon } from './TrashIcon';
+export { default as UserIcon } from './UserIcon';

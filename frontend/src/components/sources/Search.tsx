@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addHistory, clearHistory, deleteHistoryItem, getHistory } from '../../api/searchHistory';
-import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, SearchIcon, TrashIcon } from '../ui/Icons';
+import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, SearchIcon, TrashIcon } from '../ui/icons';
 import { SearchHistory } from '../../types';
 
 interface Props {
