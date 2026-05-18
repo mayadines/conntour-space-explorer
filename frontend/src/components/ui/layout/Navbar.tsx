@@ -1,30 +1,26 @@
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../../api/auth';
+import Button from '../Button';
 
 const Navbar: FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate('/signin');
+    navigate('/auth');
   };
 
   return (
     <nav className="bg-white shadow-sm px-6 py-3 flex justify-between items-center">
-      <button onClick={() => navigate('/')} className="focus:outline-none">
+      <Link to="/">
         <img
           src={`${process.env.PUBLIC_URL}/logo.png`}
           alt="NASA Images Search logo"
           className="h-16"
         />
-      </button>
-      <button
-        onClick={handleLogout}
-        className="text-sm text-gray-600 hover:text-red-500 transition-colors"
-      >
-        Logout
-      </button>
+      </Link>
+      <Button onClick={handleLogout}>Logout</Button>
     </nav>
   );
 };

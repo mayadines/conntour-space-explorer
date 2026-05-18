@@ -11,10 +11,6 @@ class SourceRepository:
     def __init__(self, session: AsyncSession):
         self._session = session
 
-    async def get_all(self) -> List[Source]:
-        result = await self._session.execute(select(SourceModel))
-        return [Source.model_validate(row) for row in result.scalars().all()]
-
     async def search(self, query: str, page: int, page_size: int) -> Tuple[List[SearchResult], int]:
         if not query.strip():
             count_stmt = select(func.count()).select_from(SourceModel)

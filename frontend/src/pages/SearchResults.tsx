@@ -8,7 +8,7 @@ import LoadingState from '../components/ui/feedback/LoadingState';
 import ErrorState from '../components/ui/feedback/ErrorState';
 import EmptyState from '../components/ui/feedback/EmptyState';
 import ResultsList from '../components/search/ResultsList';
-import { SearchResult } from '../types';
+import { SearchResult } from '../api/sources';
 
 const PAGE_SIZE = 6;
 const SEARCH_PARAM = 'q';
@@ -66,7 +66,7 @@ const SearchResults: FC = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="container mx-auto px-4 pt-8">
+      <div className="container mx-auto px-4">
         <Search initialQuery={query} />
         {renderContent()}
       </div>

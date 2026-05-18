@@ -1,10 +1,27 @@
 import axios from 'axios';
-import { SearchResponse, Source } from '../types';
 
-export const fetchSources = async (signal?: AbortSignal): Promise<Source[]> => {
-  const { data } = await axios.get<Source[]>('/api/sources', { signal });
-  return data;
-};
+export interface Source {
+  id: number;
+  name: string;
+  description: string;
+  launch_date: string;
+  image_url: string | null;
+  type: string;
+  status: string;
+}
+
+export interface SearchResult {
+  source: Source;
+  score: number;
+}
+
+export interface SearchResponse {
+  items: SearchResult[];
+  total: number;
+  page: number;
+  page_size: number;
+  pages: number;
+}
 
 export const searchSources = async (
   query: string,

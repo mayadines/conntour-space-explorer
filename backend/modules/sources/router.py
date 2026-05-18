@@ -1,5 +1,4 @@
 import math
-from typing import List
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,18 +6,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db import get_db
 from modules.auth.security import get_current_user
 from modules.sources.repository import SourceRepository
-from modules.sources.schemas import SearchResponse, Source
+from modules.sources.schemas import SearchResponse
 
 router = APIRouter(prefix="/api/sources", tags=["sources"], dependencies=[Depends(get_current_user)])
 
 
 def get_repository(session: AsyncSession = Depends(get_db)) -> SourceRepository:
     return SourceRepository(session)
-
-
-@router.get("", response_model=List[Source])
-async def get_sources(repository: SourceRepository = Depends(get_repository)) -> List[Source]:
-    return await repository.get_all()
 
 
 @router.get("/search", response_model=SearchResponse)
