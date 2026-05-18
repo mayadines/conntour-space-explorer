@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -22,3 +22,11 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String(255), nullable=False, unique=True)
     user_password = Column(String(255), nullable=False)
+
+
+class SearchHistoryModel(Base):
+    __tablename__ = "search_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    search_query = Column(Text, nullable=False)
