@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException, Query
 
-from db import get_db
+from db import DBSession, get_db
+from exceptions import DuplicateEntryError
 from modules.auth.security import get_current_user
 from modules.search_history.repository import SearchHistoryRepository
 from modules.search_history.schemas import SearchHistory, SearchHistoryCreate, SearchHistoryPage
@@ -9,8 +9,8 @@ from modules.search_history.schemas import SearchHistory, SearchHistoryCreate, S
 router = APIRouter(prefix="/api/search-history", tags=["search-history"])
 
 
-def get_repository(session: AsyncSession = Depends(get_db)) -> SearchHistoryRepository:
-    return SearchHistoryRepository(session)
+def get_repository(db: DBSession = Depends(get_db)) -> SearchHistoryRepository:
+    return SearchHistoryRepository(db)
 
 
 @router.get("", response_model=SearchHistoryPage)
@@ -20,8 +20,11 @@ async def get_history(
     current_user: dict = Depends(get_current_user),
     repository: SearchHistoryRepository = Depends(get_repository),
 ) -> SearchHistoryPage:
-    items, total = await repository.get_by_user_id(current_user["id"], page, page_size)
-    return SearchHistoryPage(items=items, total=total, page=page, page_size=page_size)
+    try:
+        items, total = await repository.get_by_user_id(current_user["id"], page, page_size)
+        return SearchHistoryPage(items=items, total=total, page=page, page_size=page_size)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to fetch search history")
 
 
 @router.delete("", status_code=204)
@@ -29,7 +32,10 @@ async def clear_history(
     current_user: dict = Depends(get_current_user),
     repository: SearchHistoryRepository = Depends(get_repository),
 ) -> None:
-    await repository.clear(current_user["id"])
+    try:
+        await repository.clear(current_user["id"])
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to clear search history")
 
 
 @router.delete("/{history_id}", status_code=204)
@@ -38,7 +44,10 @@ async def delete_history_item(
     current_user: dict = Depends(get_current_user),
     repository: SearchHistoryRepository = Depends(get_repository),
 ) -> None:
-    await repository.delete(current_user["id"], history_id)
+    try:
+        await repository.delete(current_user["id"], history_id)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to delete history item")
 
 
 @router.post("", response_model=SearchHistory, status_code=201)
@@ -47,4 +56,9 @@ async def add_history(
     current_user: dict = Depends(get_current_user),
     repository: SearchHistoryRepository = Depends(get_repository),
 ) -> SearchHistory:
-    return await repository.create(current_user["id"], data)
+    try:
+        return await repository.create(current_user["id"], data)
+    except DuplicateEntryError:
+        raise HTTPException(status_code=409, detail="History entry already exists")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to save search history")

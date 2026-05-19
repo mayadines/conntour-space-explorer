@@ -1,23 +1,15 @@
 from typing import Optional
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from repository import BaseRepository
 from db.models import UserModel
 from modules.auth.schemas import LoginRequest
 from modules.auth.security import verify_password
 from modules.users.schemas import User
 
 
-class AuthRepository:
-    def __init__(self, session: AsyncSession):
-        self._session = session
-
+class AuthRepository(BaseRepository):
     async def login(self, data: LoginRequest) -> Optional[User]:
-        result = await self._session.execute(
-            select(UserModel).where(UserModel.user_name == data.user_name)
-        )
-        row = result.scalar_one_or_none()
-        if not row or not verify_password(data.user_password, row.user_password):
+        user_record = await self._db_session.get_one(UserModel, {"user_name": data.user_name})
+        if not user_record or not verify_password(data.user_password, user_record.user_password):
             return None
-        return User.model_validate(row)
+        return User.model_validate(user_record)

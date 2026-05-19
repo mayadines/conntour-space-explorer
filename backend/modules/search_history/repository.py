@@ -1,55 +1,30 @@
 from typing import Tuple
 
-from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from repository import BaseRepository
 from db.models import SearchHistoryModel
 from modules.search_history.schemas import SearchHistory, SearchHistoryCreate
 
 
-class SearchHistoryRepository:
-    def __init__(self, session: AsyncSession):
-        self._session = session
-
+class SearchHistoryRepository(BaseRepository):
     async def get_by_user_id(self, user_id: int, page: int, page_size: int) -> Tuple[list[SearchHistory], int]:
-        total = (
-            await self._session.execute(
-                select(func.count()).select_from(SearchHistoryModel).where(SearchHistoryModel.user_id == user_id)
-            )
-        ).scalar_one()
-
-        result = await self._session.execute(
-            select(SearchHistoryModel)
-            .where(SearchHistoryModel.user_id == user_id)
-            .order_by(SearchHistoryModel.id.desc())
-            .offset((page - 1) * page_size)
-            .limit(page_size)
+        history_records, total = await self._db_session.get_paginated_with_total(
+            SearchHistoryModel,
+            filters={"user_id": user_id},
+            order_by=("id", "desc"),
+            page=page,
+            page_size=page_size,
         )
-        items = [SearchHistory.model_validate(row) for row in result.scalars().all()]
-        return items, total
+        return [SearchHistory.model_validate(record) for record in history_records], total
 
     async def delete(self, user_id: int, history_id: int) -> None:
-        result = await self._session.execute(
-            select(SearchHistoryModel).where(
-                SearchHistoryModel.id == history_id,
-                SearchHistoryModel.user_id == user_id,
-            )
-        )
-        entry = result.scalar_one_or_none()
-        if entry:
-            await self._session.delete(entry)
-            await self._session.commit()
+        history_to_delete = await self._db_session.get_one(SearchHistoryModel, {"id": history_id, "user_id": user_id})
+        if history_to_delete:
+            await self._db_session.delete_instance(history_to_delete)
 
     async def clear(self, user_id: int) -> None:
-        from sqlalchemy import delete as sql_delete
-        await self._session.execute(
-            sql_delete(SearchHistoryModel).where(SearchHistoryModel.user_id == user_id)
-        )
-        await self._session.commit()
+        await self._db_session.delete_where(SearchHistoryModel, {"user_id": user_id})
 
     async def create(self, user_id: int, data: SearchHistoryCreate) -> SearchHistory:
-        entry = SearchHistoryModel(user_id=user_id, search_query=data.search_query)
-        self._session.add(entry)
-        await self._session.commit()
-        await self._session.refresh(entry)
-        return SearchHistory.model_validate(entry)
+        new_history = SearchHistoryModel(user_id=user_id, search_query=data.search_query)
+        saved_history = await self._db_session.add(new_history)
+        return SearchHistory.model_validate(saved_history)
