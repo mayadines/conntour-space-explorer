@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { FilterItem, searchSources } from '../api/sources';
+import { FilterItem, SearchResult, searchSources } from '../api/sources';
 import Navbar from '../components/ui/layout/Navbar';
 import Search from '../components/search/Search';
 import FilterPanel from '../components/search/FilterPanel';
@@ -9,25 +9,22 @@ import LoadingState from '../components/ui/feedback/LoadingState';
 import ErrorState from '../components/ui/feedback/ErrorState';
 import EmptyState from '../components/ui/feedback/EmptyState';
 import ResultsList from '../components/search/ResultsList';
-import { SearchResult } from '../api/sources';
 
 const PAGE_SIZE = 6;
 const SEARCH_PARAM = 'q';
 const FILTERS_PARAM = 'filters';
 
-function parseFilters(params: URLSearchParams): FilterItem[] {
-  try {
-    const raw = params.get(FILTERS_PARAM);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
 const SearchResults: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get(SEARCH_PARAM) ?? '';
-  const filters = parseFilters(searchParams);
+  const filtersJson = searchParams.get(FILTERS_PARAM) ?? '';
+  const filters = useMemo<FilterItem[]>(() => {
+    try {
+      return filtersJson ? JSON.parse(filtersJson) : [];
+    } catch {
+      return [];
+    }
+  }, [filtersJson]);
 
   const [results, setResults] = useState<SearchResult[]>([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -36,14 +33,14 @@ const SearchResults: FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const prevQueryRef = useRef(query);
-  const prevFiltersRef = useRef(JSON.stringify(filters));
+  const prevFiltersRef = useRef(filtersJson);
 
   const queryChanged = prevQueryRef.current !== query;
-  const filtersChanged = prevFiltersRef.current !== JSON.stringify(filters);
+  const filtersChanged = prevFiltersRef.current !== filtersJson;
 
   if (queryChanged || filtersChanged) {
     prevQueryRef.current = query;
-    prevFiltersRef.current = JSON.stringify(filters);
+    prevFiltersRef.current = filtersJson;
     setPage(1);
   }
 
@@ -63,8 +60,7 @@ const SearchResults: FC = () => {
       .finally(() => setLoading(false));
 
     return () => controller.abort();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, page, searchParams]);
+  }, [query, page, filters]);
 
   const handleFiltersChange = useCallback((next: FilterItem[]) => {
     setSearchParams(prev => {

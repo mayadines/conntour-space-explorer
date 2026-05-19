@@ -54,7 +54,7 @@ const FilterPanel: FC<FilterPanelProps> = ({ filters, onChange }) => {
 
   return (
     <div className="mb-2">
-      <Button variant="icon" onClick={toggleOpen}>
+      <Button variant="icon" onClick={toggleOpen} aria-expanded={open}>
         <FilterIcon />
         Filters
         {hasActiveFilters && (
