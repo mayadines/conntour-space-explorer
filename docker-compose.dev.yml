@@ -28,6 +28,7 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/space_explorer
+      - SECRET_KEY=space-explorer-dev-secret
     depends_on:
       db:
         condition: service_healthy
