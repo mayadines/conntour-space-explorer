@@ -12,4 +12,4 @@ docker compose up --build
   3. **Implementation details**: Built using a generic architecture to ensure the filtering logic is highly extensible, making it easy to add new filter criteria in the future without refactoring.
   4. **Demo**: 
   ![App Screenshot](./demo/main-page.png)
-  ![App Screenshot](./demo/filter-activated.png)
+  ![App Screenshot](./demo/filter-acticated.png)
