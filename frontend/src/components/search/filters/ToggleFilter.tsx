@@ -8,7 +8,7 @@ interface ToggleFilterProps {
 
 const ToggleFilter: FC<ToggleFilterProps> = ({ label, checked, onChange }) => (
   <div className="flex items-center gap-3">
-    <label className="text-sm font-medium text-gray-700">{label}</label>
+    <span className="text-sm font-medium text-gray-700">{label}</span>
     <button
       type="button"
       role="switch"

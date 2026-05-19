@@ -15,6 +15,7 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ label, from, to, onFromChan
       <input
         type="date"
         value={from ?? ''}
+        max={to}
         onChange={e => onFromChange(e.target.value)}
         className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
@@ -24,6 +25,7 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ label, from, to, onFromChan
       <input
         type="date"
         value={to ?? ''}
+        min={from}
         onChange={e => onToChange(e.target.value)}
         className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
