@@ -16,6 +16,11 @@ class DBSession:
             statement = statement.where(getattr(model, field) == value)
         return statement
 
+    def _apply_conditions(self, statement, conditions: list):
+        for condition in (conditions or []):
+            statement = statement.where(condition)
+        return statement
+
     async def get_one(self, model, filters: dict) -> Optional[Any]:
         statement = self._apply_filters(select(model), model, filters)
         result = await self._session.execute(statement)
@@ -44,19 +49,23 @@ class DBSession:
         order_by: tuple[str, str] = None,
         page: int = 1,
         page_size: int = 10,
+        extra_conditions: list = None,
     ) -> tuple[list[Any], int]:
-        total_count = func.count().over().label("total_count")
-        statement = self._apply_filters(select(model, total_count), model, filters)
+        count_statement = self._apply_filters(select(func.count()).select_from(model), model, filters)
+        count_statement = self._apply_conditions(count_statement, extra_conditions)
+        total = (await self._session.execute(count_statement)).scalar_one()
+
+        if not total:
+            return [], 0
+
+        statement = self._apply_filters(select(model), model, filters)
+        statement = self._apply_conditions(statement, extra_conditions)
         if order_by:
             col = getattr(model, order_by[0])
             statement = statement.order_by(col.desc() if order_by[1] == "desc" else col)
         statement = statement.offset((page - 1) * page_size).limit(page_size)
-        results = (await self._session.execute(statement)).all()
-        if not results:
-            return [], 0
-        total = results[0][1]
-        items = [result[0] for result in results]
-        return items, total
+        items = (await self._session.execute(statement)).scalars().all()
+        return list(items), total
 
     async def add(self, instance: Any) -> Any:
         try:
@@ -84,10 +93,12 @@ class DBSession:
         text_fields: list[str],
         page: int,
         page_size: int,
+        extra_conditions: list = None,
     ) -> tuple[list[tuple[Any, int]], int]:
         if not query.strip():
             items, total = await self.get_paginated_with_total(
                 model, order_by=("id", "asc"), page=page, page_size=page_size,
+                extra_conditions=extra_conditions,
             )
             return [(item, 0) for item in items], total
 
@@ -105,9 +116,9 @@ class DBSession:
             select(model, relevance_score, total_count)
             .where(text_match_condition)
             .order_by(relevance_score.desc())
-            .offset((page - 1) * page_size)
-            .limit(page_size)
         )
+        statement = self._apply_conditions(statement, extra_conditions)
+        statement = statement.offset((page - 1) * page_size).limit(page_size)
         results = (await self._session.execute(statement)).all()
         if not results:
             return [], 0

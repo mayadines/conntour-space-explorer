@@ -23,14 +23,35 @@ export interface SearchResponse {
   pages: number;
 }
 
+export interface EqualityFilter {
+  field: string;
+  type: 'equality';
+  value: string | number | boolean;
+}
+
+export interface RangeFilter {
+  field: string;
+  type: 'range';
+  from?: string;
+  to?: string;
+}
+
+export type FilterItem = EqualityFilter | RangeFilter;
+
 export const searchSources = async (
   query: string,
   page = 1,
   pageSize = 6,
+  filters: FilterItem[] = [],
   signal?: AbortSignal
 ): Promise<SearchResponse> => {
   const { data } = await axios.get<SearchResponse>('/api/sources/search', {
-    params: { q: query, page, page_size: pageSize },
+    params: {
+      q: query,
+      page,
+      page_size: pageSize,
+      ...(filters.length > 0 && { filters: JSON.stringify(filters) }),
+    },
     signal,
   });
   return data;

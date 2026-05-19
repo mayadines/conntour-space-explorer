@@ -1,18 +1,23 @@
 from typing import List, Tuple
 
+from filters import FilterItem
 from repository import BaseRepository
 from db.models import SourceModel
 from modules.sources.schemas import SearchResult, Source
 
 
 class SourceRepository(BaseRepository):
-    async def search(self, query: str, page: int, page_size: int) -> Tuple[List[SearchResult], int]:
+    async def search(
+        self, query: str, page: int, page_size: int, filters: List[FilterItem]
+    ) -> Tuple[List[SearchResult], int]:
+        extra_conditions = self._build_conditions(SourceModel, filters)
         search_results, total = await self._db_session.search_full_text(
             SourceModel,
             query=query,
             text_fields=["name", "description"],
             page=page,
             page_size=page_size,
+            extra_conditions=extra_conditions,
         )
         items = [
             SearchResult(source=Source.model_validate(source_record), score=round(score * 1000))
